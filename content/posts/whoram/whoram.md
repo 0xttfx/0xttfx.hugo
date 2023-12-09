@@ -45,7 +45,7 @@ editPost:
  o Page Cache faz parte do [Virtual File System - VFS](https://en.wikipedia.org/wiki/Virtual_file_system) que é uma camada de software do núcleo que trata de todas as chamadas de sistema relacionadas a um sistema de arquivos Unix. 
  Sua principal vantagem é prover uma interface genérica para diversos tipos de sistemas de arquivos. Ou seja, o VFS permite que chamadas de sistemas genéricas, tais como open( ) e read( ),possam ser executadas independentemente do sistema de arquivos usados ou do meio físico! O que implica diretamente na latência de I/O das operações de leitura e gravação.
 
- - Quando um sistema grava dados no cache, em algum momento ele também deve gravar esses dados no armazenamento. O tempo dessa gravação é controlado pelo que é conhecido como *write policy*, e existem duas abordagens básicas de escrita: 
+ - Quando um sistema grava dados no cache, em algum momento também deve gravar esses dados no armazenamento. O tempo dessa gravação é controlado pelo que é conhecido como *write policy*, e existem duas abordagens básicas de escrita: 
 
    - *Write-through*: a gravação é feita de forma síncrona tanto no cache quanto no armazenamento de apoio. 
    - *Write-back*: inicialmente, a escrita é feita apenas no cache. A gravação no armazenamento de apoio é adiada até que o conteúdo modificado esteja prestes a ser substituído por outro bloco de cache.
