@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://0xttfx.github.io/</loc>
+    <lastmod>2023-11-15T20:25:31-03:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/</loc>
+    <lastmod>2023-11-15T20:25:31-03:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/whoram/</loc>
+    <lastmod>2023-11-15T20:25:31-03:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/whoram/whoram/</loc>
+    <lastmod>2023-11-15T20:25:31-03:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/dokawsrds/</loc>
+    <lastmod>2023-11-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/dokawsrds/ip-dok-awsrds/</loc>
+    <lastmod>2023-11-06T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
