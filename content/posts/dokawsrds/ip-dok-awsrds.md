@@ -34,9 +34,12 @@ tags: ['DOK','AWS','RDS']
   - [DO CLI](https://docs.digitalocean.com/reference/doctl/how-to/install/)
     - [API compute](https://docs.digitalocean.com/reference/doctl/reference/compute/)
 
+- Repositório script
+  - [ip-do_aws-rds.sh](https://github.com/0xttfx/ip-do_aws-rds)
+
 ## Executando
 
- Crie diretório `tools` em  `/usr/local` 
+ Crie diretório `tools` e `tools/log` em  `/usr/local` 
 ```
 mkdir -p /usr/local/tools/log && cd /usr/local/tools/ && \
 git clone git@github.com:0xttfx/ip-do_aws-rds.git && cd ip-*
