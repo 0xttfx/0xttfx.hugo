@@ -1,6 +1,6 @@
 ---
 title: "RTFM & Aleatoriedades para SysAdmin - journalctl "
-date: 2024-01-5T17:25:31-03:00
+date: 2024-01-05T17:43:55-03:00
 # weight: 1
 # aliases: ["/first"]
 tags: ["first"]
@@ -12,7 +12,7 @@ draft: false
 hidemeta: false
 comments: false
 description: "Desc Text."
-#canonicalURL: "https://canonical.url/to/page"
+canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
 disableHLJS: false
