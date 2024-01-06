@@ -1,5 +1,5 @@
 ---
-title: "WhoRAM"
+title: "Who Page Cache"
 date: 2023-11-15T20:25:31-03:00
 # weight: 1
 # aliases: ["/first"]
@@ -12,7 +12,7 @@ draft: false
 hidemeta: false
 comments: false
 description: "Desc Text."
-canonicalURL: "https://canonical.url/to/page"
+#canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
 disableHLJS: false
