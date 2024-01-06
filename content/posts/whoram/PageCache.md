@@ -107,25 +107,25 @@ conjunto de funções como para pages contendo dados de arquivos regulares.
 
  1. Primeiro criamos um processo em um novo cgroup 
     - Rodamos o comanod *mtr* utilizando o `systemd-run` para isolá-lo num cgroup(por que sim...rs)
-      ```
+      ```bash
       systemd-run --user -P -t -G --wait mtr 8.8.8.8
       ```
  
  2. Em seguida coletamos o seu PID e verificamos os valores de RSS e VSZ
     - Com o comando `ps` coletamos seu PID e os dados de RSS e VSZ
       - O PID do processo
-        ```
+        ```bash
         $ ps -aux |grep -E systemd-run.*mtr | grep -v grep |awk '{print $2}'
         236341
         ```
       - E os dados de RSS e VSZ  
-        ```
+        ```bash
         $  ps -o rss,vsz,cmd -p $(ps -aux |grep -E systemd-run.*mtr | grep -v grep |awk '{print $2}')
           RSS    VSZ CMD
          7168  14940 systemd-run --user -P -t -G --wait mtr 8.8.8.8
         ``` 
         - Só a título de cuiriosidade, segue algumas formas de coverter o valor para megabytes:
-          ```
+          ```bash
           $ echo $((7168/1024))
           7
 
@@ -149,7 +149,7 @@ conjunto de funções como para pages contendo dados de arquivos regulares.
 
  3. Em seguida usamos o **procfs** para ter mais detalhes desse uso de RAM que o RSS está apontando.
     - Vamos ver o arquivo `smaps_rollup` que é uma soma das áreas de memória do `smaps` do nosso PID
-      ```
+      ```bash
       $ cat /proc/236341/smaps_rollup 
       559517c38000-7ffe5c398000 ---p 00000000 00:00 0                          [rollup]
       Rss:                7368 kB
