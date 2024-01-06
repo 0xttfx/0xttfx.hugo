@@ -51,9 +51,9 @@ A Principais características do subsistema swapping  são:
 - Fornece a função de "swap out" pages da RAM para a área de swap  e "swap in" pages da área de swap para RAM.
 - Faz uso da “swapped-out page identifiers” das entradas na "Page Table" que foram swapped para acompanhar as posições dos dados na área de swap.
 
-Em suma, o swapping é o principal recurso de "page frame reclaiming"! E se queremos ter certeza que todos os "page frames" obtidos por um processo, não apenas os "pages" que contem "disk image", podem ser recuperados pelo PFRA, devemos fazer uso do swapping...
+Em suma, o swapping é o principal recurso de "page frame reclaiming"! E se queremos ter certeza que todos os "page frames" obtidos por um processo, não apenas os "pages" que contem "disk image", possam ser recuperados pelo PFRA, devemos fazer uso do swapping...
 
-Com isso podemos deduzir que grandes áreas de swap permite o Kernel iniciar vários processos onde o total de solicitações de memória ultrapassa a quantidade de RAM física.
+Com isso podemos deduzir que grandes áreas de swap dão poder ao Kernel para iniciar vários processos onde o total de solicitações de memória ultrapassa a quantidade de RAM física.
 
 E como na TI, nem tudo são flores, precisamos nos atentar que simular RAM em disco, nos traz um desempenho em milissegundos se comparado aos nanosegundos da RAM física ;) 
 
