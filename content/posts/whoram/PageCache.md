@@ -36,66 +36,80 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
- RAM é um hardware valioso e caro bem como a sua latência é ainda mais importante que a latência do disco. E por isso, o kernel Linux tenta ao máximo otimizar os uso da memória, fazendo uso de técnicas como compartilhando de páginas entre processos e Page Cache para melhorar a velocidade de I/O de armazenamento, armazenando um subconjunto de dados do disco na memória.
- O Page Cache realiza compartilhamento implícito de memória e de forma assíncrona com o armazenamento em segundo plano! Isso por sí só, traz ainda mais complexidade à estimativa de uso de memória por parte dos administradores!
+Author: Thiago Torres Faioli
+Data: 15 de Novembro de 2023
+
+RAM é um hardware valioso e caro bem como a sua latência é ainda mais importante que a latência do disco. E por isso, o kernel Linux tenta ao máximo otimizar os uso da memória, fazendo uso de técnicas como compartilhando de páginas entre processos e Page Cache para melhorar a velocidade de I/O de armazenamento, armazenando um subconjunto de dados do disco na memória.
+ 
+O Page Cache realiza compartilhamento implícito de memória e de forma assíncrona com o armazenamento em segundo plano! Isso por sí só, traz ainda mais complexidade à estimativa de uso de memória por parte dos administradores!
 
 
  ## Mas o que é Page Cache
 
- o Page Cache faz parte do [Virtual File System - VFS](https://en.wikipedia.org/wiki/Virtual_file_system) que é uma camada de software do núcleo que trata de todas as chamadas de sistema relacionadas a um sistema de arquivos Unix. 
- Sua principal vantagem é prover uma interface genérica para diversos tipos de sistemas de arquivos. Ou seja, o VFS permite que chamadas de sistemas genéricas, tais como open( ) e read( ),possam ser executadas independentemente do sistema de arquivos usados ou do meio físico! O que implica diretamente na latência de I/O das operações de leitura e gravação.
+o Page Cache faz parte do [Virtual File System - VFS](https://en.wikipedia.org/wiki/Virtual_file_system) que é uma camada de software do núcleo que trata de todas as chamadas de sistema relacionadas a um sistema de arquivos Unix. 
 
- - Quando um sistema grava dados no cache, em algum momento também deve gravar esses dados no armazenamento. O tempo dessa gravação é controlado pelo que é conhecido como *write policy*, e existem duas abordagens básicas de escrita: 
+Sua principal vantagem é prover uma interface genérica para diversos tipos de sistemas de arquivos. Ou seja, o VFS permite que chamadas de sistemas genéricas, tais como open( ) e read( ),possam ser executadas independentemente do sistema de arquivos usados ou do meio físico! O que implica diretamente na latência de I/O das operações de leitura e gravação.
 
-   - *Write-through*: a gravação é feita de forma síncrona tanto no cache quanto no armazenamento de apoio. 
-   - *Write-back*: inicialmente, a escrita é feita apenas no cache. A gravação no armazenamento de apoio é adiada até que o conteúdo modificado esteja prestes a ser substituído por outro bloco de cache.
-     - Nesse [link você pode ter mais informações sobre o algorítimo](https://en.wikipedia.org/wiki/Cache_%28computing%29#Writing_policies)
+- Quando um sistema grava dados no cache, em algum momento também deve gravar esses dados no armazenamento. O tempo dessa gravação é controlado pelo que é conhecido como *write policy*, e existem duas abordagens básicas de escrita: 
+	- *Write-through*: a gravação é feita de forma síncrona tanto no cache quanto no armazenamento de apoio. 
+	- *Write-back*: inicialmente, a escrita é feita apenas no cache. A gravação no armazenamento de apoio é adiada até que o conteúdo modificado esteja prestes a ser substituído por outro bloco de cache.
+    
+		- Nesse [link você pode ter mais informações sobre o algorítimo](https://en.wikipedia.org/wiki/Cache_%28computing%29#Writing_policies)
 
- Page é a unidade de memória que o Kernel trabalha com Page Cache, e geralmente possui 4k de comprimento mínimo de armazenamento no Page Cache. Dessa forma todo I/O de arquivo está alinhado a uma quantidade específica de páginas...
+Page é a unidade de memória que o Kernel trabalha com Page Cache, e geralmente possui 4k de comprimento mínimo de armazenamento no Page Cache. 
+- Dessa forma todo I/O de arquivo está alinhado a uma quantidade específica de páginas...
 
- Até aqui, podemos entender que o Page Cache, é o principal cache de disco usado pelo kernel do Linux. Sendo utilizado ao ler ou gravar no disco; quando novas páginas são adicionadas ao cache de páginas para satisfazer as solicitações de leitura dos processos do Modo de Usuário. 
- - Se a página ainda não estiver no cache, uma nova entrada será adicionada ao cache e preenchida com os dados lidos do disco. Se houver memória livre suficiente, a página é mantida no cache por um período indefinido e pode então ser reutilizada por outros processos sem acessar o disco.
+Até aqui, podemos entender que o Page Cache, é o principal cache de disco usado pelo kernel do Linux e é utilizado ao ler ou gravar no disco quando novas páginas são adicionadas ao Page Cache para satisfazer as solicitações de leitura dos processos do *User Mode stack*. 
+- Se a página ainda não estiver no cache, uma nova entrada será adicionada ao cache e preenchida com os dados lidos do disco. 
+    - Se houver memória livre suficiente, a página é mantida no cache por um período indefinido e pode então ser reutilizada por outros processos sem acessar o disco.
 
- - Da mesma forma, antes de gravar uma página de dados em um dispositivo de bloco, o kernel verifica se a página correspondente já está incluída no cache; caso contrário, uma nova entrada é adicionada ao cache e preenchida com os dados a serem gravados no disco. 
-   - A transferência de dados de I/O não começa imediatamente: a atualização do disco é atrasada por alguns segundos, dando assim aos processos a chance de modificar ainda mais os dados a serem gravados (em outras palavras, o kernel implementa operações de deferred write).
+Da mesma forma, antes de gravar page de dados em um dispositivo de bloco, o kernel verifica se a page correspondente já está incluída no cache; caso contrário, uma nova entrada é adicionada ao cache e preenchida com os dados a serem gravados no disco. 
+   - A transferência de dados de I/O não começa imediatamente: 
+    - a atualização do disco é atrasada por alguns segundos, dando assim aos processos a chance de modificar ainda mais os dados a serem gravados 
+        - em outras palavras, o kernel implementa operações de *deferred write*
 
- As páginas incluídas no Page Cache podem ser dos seguintes tipos:
+As páginas incluídas no Page Cache podem ser os seguintes tipos:
 
  - Pages contendo dados de arquivos regulares; no Capítulo 16, descrevemos como o kernel lida com operações de leitura, gravação e mapeamento de memória neles.
  - Pages contendo diretórios; o Linux lida com os diretórios de forma muito semelhante aos arquivos normais.
- - Pages contendo dados lidos diretamente de arquivos de dispositivos de bloco (ignorando a camada do sistema de arquivos); o kernel os trata usando o mesmo
-conjunto de funções como para pages contendo dados de arquivos regulares.
- - Pages contendo dados de processos do Modo Usuário que foram trocados em disco; o kernel pode ser forçado a manter-se armazenado em page cache algumas pages cujo conteúdo já foi escrito em uma área de swap.
+ - Pages contendo dados lidos diretamente de arquivos de dispositivos de bloco (ignorando a camada do sistema de arquivos); o kernel os trata usando o mesmo conjunto de funções como para pages contendo dados de arquivos regulares.
+ - Pages contendo dados de processos do *User Mode stack* que foram trocados em disco; o kernel pode forçar a manter-se armazenado em page cache algumas pages cujo conteúdo já foi escrito em uma área de swap.
  - Pages pertencentes a arquivos de sistemas de arquivos especiais, como o sistema de arquivos especial *shm* usado para região de memória compartilhada de comunicação entre processos (IPC).
 
- Como podemos ver, cada page incluída no Page Cache contém dados pertencentes a algum arquivo. Este arquivo – ou mais precisamente o inode do arquivo – é chamado de page’s owner.
+Como podemos ver, cada page incluída no Page Cache contém dados pertencentes a algum arquivo. Este arquivo – ou mais precisamente o inode do arquivo – é chamado de *page’s owner*.
 
- Praticamente todas as operações read() e write() de arquivos dependem do Page Cache. 
+Praticamente todas as operações read() e write() de arquivos dependem do Page Cache. 
  - a única exceção ocorre quando um processo abre um arquivo com a flag O_DIRECT definido: neste caso, o cache da página é ignorado e as transferências de dados de E/S fazem uso de buffers no espaço de endereço do modo de usuário do processo.
    - Várias aplicações database fazem uso da flag O_DIRECT pra que assim possam faze uso do próprio algorítimo de caching...
 
- Os projetistas do kernel implementaram o Page Cache para atender a dois requisitos principais: 
+Os projetistas do kernel implementaram o Page Cache para atender a dois requisitos principais: 
 
  - Localizar rapidamente um page específica contendo dados relativos a um determinado proprietário. 
    Para aproveitar ao máximo o cache da página, pesquisá-lo deve ser uma operação muito rápida. 
  - Acompanhar como cada page do cache deve ser tratada ao ler ou escrever seu conteúdo. 
    - Por exemplo, a leitura de uma page de um arquivo regular, ou de um arquivo de dispositivo de bloco ou de uma área de swap, deve ser realizada de diferentes maneiras, portanto o kernel deve selecionar a operação adequada dependendo do proprietário da página. 
 
- A unidade de informação mantida no page cache é, obviamente, uma página inteira de dados.
+A unidade de informação mantida no page cache é, obviamente, uma página inteira de dados.
  - uma página não contém necessariamente blocos de disco fisicamente adjacentes, portanto ela não pode ser identificada por um número de dispositivo e um número de bloco. 
    - Em vez disso, uma página no Page Cache é identificada por um proprietário e por um índice nos dados do proprietário – geralmente, um inode e um deslocamento dentro do arquivo correspondente.
  
 
- A estrutura de dados principal do cache de página é o objeto address_space, uma estrutura de dados incorporada no objeto inode que possui a página.* Muitas páginas no cache podem referir-se ao mesmo proprietário, portanto, podem estar vinculadas ao mesmo objeto address_space. Este objeto também estabelece uma ligação entre as páginas do proprietário e um conjunto de métodos que operam nessas páginas. Cada descritor de página inclui dois campos chamados mapeamento e índice, que vinculam a página ao cache de páginas (consulte a seção “Descritores de páginas” no Capítulo 8). O primeiro campo aponta para o objeto address_space do inode que possui a página. O segundo campo especifica o deslocamento em unidades de tamanho de página dentro do “espaço de endereço” do proprietário, ou seja, a posição dos dados da página dentro da imagem de disco do proprietário. Esses dois campos são usados ao procurar uma página no cache de páginas. Surpreendentemente, o cache de páginas pode conter múltiplas cópias dos mesmos dados do disco. Por exemplo, o mesmo bloco de dados de 4 KB de um arquivo normal pode ser acessado das seguintes maneiras: * Ocorre uma exceção para páginas que foram trocadas. Essas páginas possuem um objeto address_space comum não incluído em nenhum inode.
-
-
-
-
-
-
+A estrutura de dados principal do Page Cache é o objeto *address_space*, uma estrutura de dados incorporada no objeto inode proprietário da page.
+ -  Muitas pages no cache podem referir-se ao mesmo proprietário, portanto, podem estar vinculadas ao mesmo objeto *address_space* que  também estabelece uma ligação entre a pages do proprietários e um conjunto de métodos que operam nessas pages. 
+ 
+Cada descritor de página inclui dois campos chamados mapping e index, que vinculam a page ao Page Cache
+ 
+ - O primeiro campo aponta para o objeto *address_space* do inode proprietário da page. 
+ - O segundo campo especifica o *offset*  em unidades de *page-size* dentro do *addres_space*! 
+	 - Ou seja: a posição dos dados da page dentro do *disk image*  proprietário.
+	
+Esses dois campos são usados ao procurar uma página no cache de páginas. Surpreendentemente, o cache de páginas pode conter múltiplas cópias dos mesmos dados do disco. Por exemplo, o mesmo bloco de dados de 4 KB de um arquivo normal pode ser acessado das seguintes maneiras: * Ocorre uma exceção para páginas que foram trocadas. Essas páginas possuem um objeto address_space comum não incluído em nenhum inode.
 
 
  Dessa forma vamos tentar algumas abordagens para determinar valores mais próximos do real para o consumo de memória RAM.
+
+>[!NOTE]
+> Referencias: Daniel P. Bovet, Marco Cesati - Understanding the Linux Kernel, Third Edition-O'Reilly Media | Page Descriptors - Cap 8 Page Frame Management e The Page Cache - Cap 15 The Page Cache
 
 
 # RSS e VSZ
@@ -187,6 +201,9 @@ conjunto de funções como para pages contendo dados de arquivos regulares.
    [Nesse artigo](https://lwn.net/Articles/642202/) do LWN.net temos mais informações direto da fonte ;). 
 
 
-# Continua em breve...
+##### Continua em breve...
+
+
+
 
 
