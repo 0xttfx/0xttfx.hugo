@@ -109,7 +109,7 @@ Esses dois campos são usados ao procurar uma página no cache de páginas. Surp
  Dessa forma vamos tentar algumas abordagens para determinar valores mais próximos do real para o consumo de memória RAM.
 
 >[!NOTE]
-> Referencias: Daniel P. Bovet, Marco Cesati - Understanding the Linux Kernel, Third Edition-O'Reilly Media | Page Descriptors - Cap 8 Page Frame Management e The Page Cache - Cap 15 The Page Cache
+>Referencias: Daniel P. Bovet, Marco Cesati - Understanding the Linux Kernel, Third Edition-O'Reilly Media | Page Descriptors - Cap 8 Page Frame Management e The Page Cache - Cap 15 The Page Cache
 
 
 # RSS e VSZ
