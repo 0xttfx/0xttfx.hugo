@@ -66,37 +66,37 @@ Agora que nivelamos a introdução sobre swapping, vamos criar um espaço de tro
 
 1. Verificando se há algum swap
 
-```
+```bash
 sudo swapon --show
 ```
 
 2. Criando arquivo de swap de 2GiB
 
-```
+```bash
 sudo dd if=/dev/zero of=/swapfile count=2192 bs=1MiB
 ```
 
 3. Alterando permissão do arquivo
 
-```
+```bash
 sudo chmod 600 /swapfile
 ```
 
 4. Marcando o arquivo como um espaço de swap
 
-```
+```bash
 sudo mkswap /swapfile
 ```
 
 5. Verificando se está tudo ok
 
-```
+```bash
 sudo swapon --show
 ```
 
 6. Adicionando a linha no '/etc/fstab' para montagem automática
 
-```
+```bash
 echo '/swapfile    none    swap    sw    0 0' | sudo tee -a /etc/fstab
 ```
 
@@ -120,11 +120,11 @@ O parâmetro `/proc/sys/vmwappiness` configura a frequência com que o sistema t
 Para um desktop, um valor de swappiness de 60 não é um valor ruim e normalmente é o valor dfault em uma distro Linux. Mas para um servidor, podemos deixá-lo mais próximo de 0, para fazer uso somente quando realmente necessário
 
 Como exemplo podemos setar para  '10' para que o swap seja utilizado após 90% de RAM ocupada
-```
+```bash
 sudo sysctl vm.swappiness=10
 ```
 Para garantir que esse valor irá se manter após um boot
-```
+```bash
 echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 ```
 
@@ -140,13 +140,18 @@ Esta opção controla a tendência do kernel de recuperar a memória que é usad
 * Aumentar vfs\_cache\_pressure além de 100 faz com que o kernel prefira recuperar dentries e inodes.
 
 Podemos definir isso em um valor mais conservador como 50
-```
+```bash
 sudo sysctl vm.vfs_cache_pressure=50
 ```
 
 Vamos garantir que após um boot o valor permaneça
-```
+```bash
 echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
 ```
 
+9. Agora sim! Vamos ativar o novo espaço de swapping 
+
+```bash
+sudo swapon /swapfile
+```
 
