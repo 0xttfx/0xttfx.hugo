@@ -36,9 +36,6 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
-Author: Thiago Torres Faioli
-Data: 15 de Novembro de 2023
-
 RAM é um hardware valioso e caro bem como a sua latência é ainda mais importante que a latência do disco. E por isso, o kernel Linux tenta ao máximo otimizar os uso da memória, fazendo uso de técnicas como compartilhando de páginas entre processos e Page Cache para melhorar a velocidade de I/O de armazenamento, armazenando um subconjunto de dados do disco na memória.
  
 O Page Cache realiza compartilhamento implícito de memória e de forma assíncrona com o armazenamento em segundo plano! Isso por sí só, traz ainda mais complexidade à estimativa de uso de memória por parte dos administradores!
@@ -91,11 +88,12 @@ Os projetistas do kernel implementaram o Page Cache para atender a dois requisit
 
 A unidade de informação mantida no page cache é, obviamente, uma página inteira de dados.
  - uma página não contém necessariamente blocos de disco fisicamente adjacentes, portanto ela não pode ser identificada por um número de dispositivo e um número de bloco. 
-   - Em vez disso, uma página no Page Cache é identificada por um proprietário e por um índice nos dados do proprietário – geralmente, um inode e um deslocamento dentro do arquivo correspondente.
+   - Em vez disso, uma página no Page Cache é identificada por um proprietário e por um índice nos dados do proprietário – geralmente, um inode e um offset dentro do arquivo correspondente.
  
 
 A estrutura de dados principal do Page Cache é o objeto *address_space*, uma estrutura de dados incorporada no objeto inode proprietário da page.
  -  Muitas pages no cache podem referir-se ao mesmo proprietário, portanto, podem estar vinculadas ao mesmo objeto *address_space* que  também estabelece uma ligação entre a pages do proprietários e um conjunto de métodos que operam nessas pages. 
+     - Aqui uma uma exceção ocorre para páginas que foram trocadas. Essas páginas possuem um objeto address_space comum não incluído em nenhum inode.
  
 Cada descritor de página inclui dois campos chamados mapping e index, que vinculam a page ao Page Cache
  
@@ -103,13 +101,107 @@ Cada descritor de página inclui dois campos chamados mapping e index, que vincu
  - O segundo campo especifica o *offset*  em unidades de *page-size* dentro do *addres_space*! 
 	 - Ou seja: a posição dos dados da page dentro do *disk image*  proprietário.
 	
-Esses dois campos são usados ao procurar uma página no cache de páginas. Surpreendentemente, o cache de páginas pode conter múltiplas cópias dos mesmos dados do disco. Por exemplo, o mesmo bloco de dados de 4 KB de um arquivo normal pode ser acessado das seguintes maneiras: * Ocorre uma exceção para páginas que foram trocadas. Essas páginas possuem um objeto address_space comum não incluído em nenhum inode.
+Esses dois campos são usados ao procurar uma página no cache de páginas. 
+
+Magitécnicamente, o cache de páginas pode conter múltiplas cópias dos mesmos dados do disco. Por exemplo, o mesmo bloco de dados de 4 KB de um arquivo normal pode ser acessado das seguintes maneiras: 
+- Lendo o arquivo; os dados são incluídos em uma page pertencente ao inode do arquivo normal.
+- Lendo o bloco do arquivo do dispositivo (partição do disco) que hospeda o arquivo;
+	- os dados são incluídos em uma page pertencente ao *master inode* do arquivo do dispositivo de bloco.
+
+Por isso, os dados de um disco aparecem em duas pages diferentes cada uma referenciada por um objeto address_space diferente...
+
+ 
+
+Abaixo temos a tabela com os campos de um objeto *adress_space*
+
+| Type | Field | Description | 
+| --- | --- | --- |
+| struct inode * | host | Pointer to the inode hosting this object, if any |
+| struct radix_tree_root | page_tree | Root of radix tree identifying the owner’s pages |
+| spinlock_t | tree_lock | Spin lock protecting the radix tree |
+| unsigned int | i_mmap_writable | Number of shared memory mappings in the address space |
+| struct prio_tree_root | i_mmap | Root of the radix priority search tree  | 
+| struct list_head | i_mmap_nonlinear | List of non-linear memory regions in the address space |
+| spinlock_t | i_mmap_lock | Spin lock protecting the radix priority search tree |
+| unsigned int | truncate_count | Sequence counter used when truncating the file |
+| unsigned long | nrpages | Total number of owner’s pages |
+| unsigned long | writeback_index | Page index of the last write-back operation on the owner’s pages |
+| struct address_space_ operations * | a_ops | Methods that operate on the owner’s pages |
+| unsigned long | flags | Error bits and memory allocator flag |
+| struct backing_dev_info * | backing_dev_info | Pointer to the backing_dev_info of the block device holding the data of this owner |
+| spinlock_t | private_lock | Usually, spin lock used when managing the private_list list |
+| struct list head | private_list | Usually, a list of dirty buffers of indirect blocks associated with the inode |
+| struct address_space * | assoc_mapping | Usually, pointer to the address_space object of the block device including the indirect blocks |
+
+Se o owner de uma page  no page cache for um arquivo, o objeto *address_space* será inserido no campo i_data de um objeto VFS inode. 
+- O campo *i_mapping* do inode sempre aponta para o objeto *address_space* do proprietário das pages que contêm os dados do inode. 
+    - O campo *host* do objeto *address_space* aponta para o objeto inode no qual o descriptor está embutido...
+
+Por isso, se uma page pertence a um arquivo armazenado em um sistema de arquivos Ext3,
+- o proprietário da page é o inode do arquivo e o objeto *address_space* correspondente é armazenado no campo *i_data* do objeto VFS inode. 
+    - O campo *i_mapping* do inode aponta para o campo *i_data* do mesmo inode, e o campo *host* do objeto *address_space* aponta para o mesmo inode...
+
+Mas como sempre: A "treta" está sempre presente na TI... :)
+
+Se uma page contém dados, lidos de um arquivo de dispositivo de bloco(onde está o dado bruto(RAW)),  o objeto *address_space* é incorporado no *master inode* do arquivo no sistema de arquivos especial *bdev* associado ao dispositivo de bloco.
+- Por isso, o campo *i_mapping* de um inode de um arquivo de dispositivo de bloco, aponta para o objeto *address_space* embutido no *master inode* 
+    - da mesma forma, o campo *host* do objeto *address_space* aponta também para o *master idone*
+        - dessa forma, todas as pages contendo dados lidos de um dispositivo de bloco possuem o mesmo objeto *address_space*, 
+            - mesmo que tenham sido acessadas de arquivos de dispositivos de bloco diferentes
 
 
- Dessa forma vamos tentar algumas abordagens para determinar valores mais próximos do real para o consumo de memória RAM.
+Os campos *i_mmap*, *i_mmap_writable*, *i_mmap_nonlinear* e *i_mmap_lock* referem-se ao mapeamento de memória e ao mapeamento reverso.
+
+O campo *backing_dev_info* aponta o descritor *backing_dev_info* associado ao dispositivo de bloco que armazena os dados do proprietário.
+- a estrutura *backing_dev_info* geralmente é incorporada no descritor da fila de solicitações do dispositivo de bloco.
+
+O campo *private_list* é o cabeçalho de uma lista genérica que pode ser usada livremente pelo sistema de arquivos para seus propósitos específicos. 
+- O Ext2 faz uso desse campo coletar os buffers sujos de blocos “indiretos” associados ao inode.
+     - "buffers sujos" são dados ainda não escritos em disco.
+     - Quando uma operação força o inode a ser gravado em disco, o kernel também libera todos os buffers nesta lista.
+
+Um campo crucial do objeto *address_space* é *a_ops*.
+- ele aponta para uma tabela do tipo *address_space_operations* contendo os métodos que definem como as pages dos proprietários são tratadas.
+    - Os métodos mais importantes são:
+        - readpage
+        - writepage 
+        - prepare_write 
+        - commit_write
+
+Os métodos vinculam os proprietários do objetos inode  aos drivers de baixo nível que acessam os dispositivos físicos. 
+- Por exemplo:
+   - a função que implementa o método *readpage* para um inode de um arquivo regular, sabe localizar as posições no dispositivo de disco físico dos blocos correspondentes a cada page do arquivo...
+
+Abaixo podemos ver a tabela de métodos do *address_space*
+
+| Method | Description |
+| --- | --- |
+| writepage | Write operation (from the page to the owner’s disk image) |
+| readpage | Read operation (from the owner’s disk image to the page) |
+| sync_page | Start the I/O data transfer of already scheduled operations on owner’s pages |
+| writepages | Write back to disk a given number of dirty owner’s pages |
+| set_page_dirty | Set an owner’s page as dirty |
+| readpages | Read a list of owner’s pages from disk |
+| prepare_write | Prepare a write operation (used by disk-based filesystems) |
+| commit_write | Complete a write operation (used by disk-based filesystems) |
+| bmap | Get a logical block number from a file block index | 
+| invalidatepage | Invalidate owner’s pages (used when truncating the file) |
+| releasepage | Used by journaling filesystems to prepare the release of a page |
+| direct_IO | Direct I/O transfer of the owner’s pages (bypassing the page cache) |
+
+
+
+
 
 >[!NOTE]
->Referencias: Daniel P. Bovet, Marco Cesati - Understanding the Linux Kernel, Third Edition-O'Reilly Media | Page Descriptors - Cap 8 Page Frame Management e The Page Cache - Cap 15 The Page Cache
+>Referencias: Daniel P. Bovet, Marco Cesati - Understanding the Linux Kernel, Third Edition-O'Reilly Media | Page Descriptors - Cap 8, Block Device Drivers - Cap 14 , The Page Cache - Cap 15, Accessing Files - Cap 16 , Page Frame Reclaiming - Cap 17 , The Ext2 and Ext3 Filesystems - Cap 18.
+
+
+
+
+Até aqui já conseguimos entender que o mecanismo de cachear arquivos em memória de forma transparente, independente de se estar mapeando algo em memória, lendo ou escrevendo em disco, deixam as coisas um pouco mais complicadas para um administrador inexperiente ao tentar obter uma aferição de consumo de memória...  
+
+Por isso, vamos tentar algumas abordagens para determinar valores mais próximos do real para o consumo de memória RAM.
 
 
 # RSS e VSZ
@@ -202,6 +294,14 @@ Esses dois campos são usados ao procurar uma página no cache de páginas. Surp
 
 
 ##### Continua em breve...
+
+
+
+
+
+
+
+
 
 
 
