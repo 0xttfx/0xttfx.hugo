@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>0xttfx</title>
+    <link>https://0xttfx.github.io/</link>
+    <description>Recent content on 0xttfx</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Thiago Torres Faioli</copyright>
+    <lastBuildDate>Sat, 06 Jan 2024 14:55:51 -0300</lastBuildDate><atom:link href="https://0xttfx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RTFM &amp; Aleatoriedades Para SysAdmin, SecOps, DevOps,{S,N}RE - Network Trobleshooting Container Docker</title>
+      <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/rtfmaleatoriedadesparasysadminsecopsdevopssnre-ntcdocker/</link>
+      <pubDate>Sat, 06 Jan 2024 14:55:51 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/rtfmaleatoriedadesparasysadminsecopsdevopssnre-ntcdocker/</guid>
+      <description>O intuito desse how to é apoiar na solução de problemas rede de containers Docker</description>
+      
+    </item>
+    
+    <item>
+      <title>RTFM &amp; AleatoriedadesParaSysAdmin - Swap</title>
+      <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-swap/rtfmaleatoriedadesparasysadmin-swap/</link>
+      <pubDate>Sat, 06 Jan 2024 09:14:00 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/rtfmaleatoriedades-swap/rtfmaleatoriedadesparasysadmin-swap/</guid>
+      <description>Swapping foi introduzida como um backup em disco para páginas não mapeadas.</description>
+      
+    </item>
+    
+    <item>
+      <title>RTFM &amp; Aleatoriedades para SysAdmin - journalctl </title>
+      <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-journalctl/rtfmaleatoriedadesparasysadmin-journalctl/</link>
+      <pubDate>Fri, 05 Jan 2024 17:43:55 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/rtfmaleatoriedades-journalctl/rtfmaleatoriedadesparasysadmin-journalctl/</guid>
+      <description>Para quando a lei de Murphy exerce a sua força.</description>
+      
+    </item>
+    
+    <item>
+      <title>Who Page Cache</title>
+      <link>https://0xttfx.github.io/posts/pagecache/pagecache/</link>
+      <pubDate>Wed, 15 Nov 2023 20:25:31 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/pagecache/pagecache/</guid>
+      <description>RAM é um hardware valioso e caro bem como a sua latência é ainda mais importante que a latência do disco.</description>
+      
+    </item>
+    
+    <item>
+      <title>IP DOK Set or Drop Sec Group AWS EC2 RDS</title>
+      <link>https://0xttfx.github.io/posts/dokawsrds/ip-dok-awsrds/</link>
+      <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/dokawsrds/ip-dok-awsrds/</guid>
+      <description>DigitalOcean Kubernetes and AWS RDS Security Group</description>
+      
+    </item>
+    
+  </channel>
+</rss>

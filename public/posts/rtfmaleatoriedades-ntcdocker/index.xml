@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>0xttfx</title>
+    <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/</link>
+    <description>Recent content on 0xttfx</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© 2024 Thiago Torres Faioli</copyright>
+    <lastBuildDate>Sat, 06 Jan 2024 14:55:51 -0300</lastBuildDate><atom:link href="https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RTFM &amp; Aleatoriedades Para SysAdmin, SecOps, DevOps,{S,N}RE - Network Trobleshooting Container Docker</title>
+      <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/rtfmaleatoriedadesparasysadminsecopsdevopssnre-ntcdocker/</link>
+      <pubDate>Sat, 06 Jan 2024 14:55:51 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/rtfmaleatoriedadesparasysadminsecopsdevopssnre-ntcdocker/</guid>
+      <description>O intuito desse how to é apoiar na solução de problemas rede de containers Docker</description>
+      
+    </item>
+    
+  </channel>
+</rss>
