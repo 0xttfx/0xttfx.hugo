@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© 2024 Thiago Torres Faioli</copyright>
-    <lastBuildDate>Sat, 06 Jan 2024 14:55:51 -0300</lastBuildDate><atom:link href="https://0xttfx.github.io/tags/first/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 09 Jan 2024 12:08:11 -0300</lastBuildDate><atom:link href="https://0xttfx.github.io/tags/first/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RTFMAleatoriedadesParaSysAdmin Old NTP Client</title>
+      <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntp/rtfmaleatoriedadesparasysadmin-oldntp/</link>
+      <pubDate>Tue, 09 Jan 2024 12:08:11 -0300</pubDate>
+      
+      <guid>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntp/rtfmaleatoriedadesparasysadmin-oldntp/</guid>
+      <description>Sempre existe a possibilidade de um dia aparecer um servidor com uma versão de SO não atual precisando que o NTP client seja configurado ou revisado… :)</description>
+      
+    </item>
+    
     <item>
       <title>RTFM &amp; Aleatoriedades Para SysAdmin, SecOps, DevOps,{S,N}RE - Network Trobleshooting Container Docker</title>
       <link>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntcdocker/rtfmaleatoriedadesparasysadminsecopsdevopssnre-ntcdocker/</link>

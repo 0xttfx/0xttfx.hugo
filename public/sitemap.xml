@@ -4,13 +4,19 @@
 
   <url>
     <loc>https://0xttfx.github.io/</loc>
-    <lastmod>2024-01-06T14:55:51-03:00</lastmod>
+    <lastmod>2024-01-09T12:08:11-03:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://0xttfx.github.io/posts/</loc>
-    <lastmod>2024-01-06T14:55:51-03:00</lastmod>
+    <lastmod>2024-01-09T12:08:11-03:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://0xttfx.github.io/posts/rtfmaleatoriedades-ntp/rtfmaleatoriedadesparasysadmin-oldntp/</loc>
+    <lastmod>2024-01-09T12:08:11-03:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>
