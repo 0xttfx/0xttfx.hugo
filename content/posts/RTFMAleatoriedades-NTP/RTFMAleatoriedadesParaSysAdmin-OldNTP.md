@@ -1,5 +1,5 @@
 ---
-title: "RTFMAleatoriedadesParaSysAdmin Old NTP Client"
+title: "RTFM & Aleatoriedades Para SysAdmin - Old NTP Client"
 date: 2024-01-09T12:08:11-03:00
 # weight: 1
 # aliases: ["/first"]
