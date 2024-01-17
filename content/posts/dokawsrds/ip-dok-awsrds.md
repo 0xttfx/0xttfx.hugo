@@ -14,12 +14,19 @@ tags: ['DOK','AWS','RDS']
 ## Atualizações
  
 - 0.4v
-  - Como inteválo mínimo de execução na CRON são de 60 segundos! E eu precisava executar por mais vezes por minuto
-    acabei contendo o scrip dentro de um laço wile que o executa por 10 vezes com intervalo de 2 segundos 
+  - Como inteválo mínimo de execução na CRON são de 60 segundos! E eu precisava executar por mais vezes por minuto acabei contendo o scrip dentro de um laço wile que o executa por 10 vezes com intervalo de 2 segundos
 - 0.5v
-  - removido laço de execução a cada 60s
+  - removido laço de x execuções a cada 60s
   - restruturado algumas conditional statement da inserção e remoção de IPs
   - O diff, antes realizado globalmente, agora é realizado para cada Security Group
+
+- 0.6v
+  - implementado o builtin *set* com as *options* *errtrace, errexit, nounset e pipefail* para deixar o script mais criterioso quanto a erros. Principalmente os de APIs 5xx sem a necessidade de fazer testes em funções, condições etc...
+  - implementado trap para melhor localização do momento e local do erro.
+
+
+
+
 
 ## Dependências
 
@@ -47,7 +54,7 @@ git clone git@github.com:0xttfx/ip-do_aws-rds.git && cd ip-*
 
  Não há argumentos, bastando executar o .sh
 ```
-./script-0.5.sh
+./script-0.6.sh
 ```
 
 ## Automação 
@@ -57,6 +64,6 @@ git clone git@github.com:0xttfx/ip-do_aws-rds.git && cd ip-*
  - altere conforme sua necessidade.
 
 ```
-* * * * * 	user	/usr/bin/bash -x /usr/local/tools/ip-do_aws-rds/script-0.5.sh >> /usr/local/tools/log/exec-script-0.5-$(date --date="today" +\%d\%m\%Y_\%H\%M\%S).log 2>&1
+* * * * * 	user	/usr/bin/bash -x /usr/local/tools/ip-do_aws-rds/script-0.6.sh >> /usr/local/tools/log/exec-script-0.6-$(date --date="today" +\%d\%m\%Y_\%H\%M\%S).log 2>&1
 0 0 * * *   user	find /usr/local/tools/log/ -type f -mtime +3 -name 'exec-*.log' -exec rm {} +
 ```
