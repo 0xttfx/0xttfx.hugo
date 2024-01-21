@@ -3,16 +3,15 @@ title: "RTFM & Aleatoriedades para SysAdmin - journalctl "
 date: 2024-01-05T17:43:55-03:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["first"]
+tags: ["SystemD","Linux"]
 author: "Me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
-TocOpen: false
+TocOpen: true
 draft: false
 hidemeta: false
-comments: false
-description: "Desc Text."
-canonicalURL: "https://canonical.url/to/page"
+comments: true
+description: "journalctl SystemD"
 disableHLJS: true # to disable highlightjs
 disableShare: false
 disableHLJS: false
@@ -24,16 +23,6 @@ ShowPostNavLinks: true
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
 UseHugoToc: true
-cover:
-    image: "<image path/url>" # image path/url
-    alt: "<alt text>" # alt text
-    caption: "<text>" # display caption under cover
-    relative: false # when using page bundles set this to true
-    hidden: true # only hide on current single page
-editPost:
-    URL: "https://github.com/<path_to_repo>/content"
-    Text: "Suggest Changes" # edit text
-    appendFilePath: true # to append file path to Edit link
 ---
 
  Para quando a lei de Murphy exerce a sua força. É nessa hora, que do seu kit MacGyver, você tira o **journalctl**  para identificar o que pode estar errado!

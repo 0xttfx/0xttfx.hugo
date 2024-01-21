@@ -3,14 +3,14 @@ title: "RTFM & Aleatoriedades Para SysAdmin - Old NTP Client"
 date: 2024-01-09T12:08:11-03:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["first"]
+tags: ["NTP","Linux","RTFM"]
 author: "Me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
-TocOpen: false
+TocOpen: true
 draft: false
 hidemeta: false
-comments: false
+comments: true
 description: "Desc Text."
 #canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
