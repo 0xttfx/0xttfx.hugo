@@ -30,6 +30,8 @@ Aqui temos uma abordagem simples de identificação de causa raiz para troublesh
 
 Como exemplo estou usando um problema, que a equipe Microsoft de uma multinacional, enfrentou com um produto de mercado que estava causando um alto uso de Non-Paged Pool Memory(memory leak). E que causou, durante uma rotina de madrugada, o travamento de +500 servidores...
 
+- eu era de uma equipe multidiciplinar. responsável por virtualização, storage, backup, Unix e Linux e acabei me envolvendo pois as equipes de Segurança e Microsoft estavam apenas trocando acusações e ainda não identificado a causa raiz... 
+
 ## Problema
 Verificado que o *non-paged pool* está com tamanho anormal
 
@@ -151,6 +153,9 @@ Continuando com a pesquisa, mas agora, tentando cruzar ocorrências do driver "m
 
 ![unknown_filename.3.png](/images/WindowsServerTroubleshooting/unknown_filename.3.png)
 
+Logo em seguida, repassei essa investigação para as equipes de SegInfo e Microfofy para continuidade do troubleshooting...
+
+
 **Referências**
 
 <https://kc.mcafee.com/corporate/index?page=content&id=KB65784>
@@ -160,8 +165,4 @@ Continuando com a pesquisa, mas agora, tentando cruzar ocorrências do driver "m
 <https://docs.microsoft.com/en-us/sysinternals/downloads/sigcheck>
 <https://community.mcafee.com/t5/Endpoint-Security-ENS/Nonpaged-pool-memory-leak-mfeavfk-sys-on-multiple-windows-server/td-p/617169>
 <https://docs.microsoft.com/en-us/windows-hardware/drivers/ifs/filter-manager-concepts>
-
-
-
-
 
