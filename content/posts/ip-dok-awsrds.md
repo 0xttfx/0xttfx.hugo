@@ -24,8 +24,12 @@ tags: ['DOK','AWS','RDS']
   - implementado o builtin *set* com as *options* *errtrace, errexit, nounset e pipefail* para deixar o script mais criterioso quanto a erros. Principalmente os de APIs 5xx sem a necessidade de fazer testes em funções, condições etc...
   - implementado trap para melhor localização do momento e local do erro.
 
-
-
+- 0.7v
+  - Implementado arquivo PID.
+  - Modificado método de criação de array's específicos para uso mapfile
+  - Melhorias no filtro diff dos arquivos de IPs
+  - Melhorias nos filtros para criação de array IPs
+  - Modificado no laço aninhado de inserção e remoção de IP para melhora do parser  
 
 
 ## Dependências
@@ -54,7 +58,7 @@ git clone git@github.com:0xttfx/ip-do_aws-rds.git && cd ip-*
 
  Não há argumentos, bastando executar o .sh
 ```
-./script-0.6.sh
+./script-0.7.sh
 ```
 
 ## Automação 
@@ -64,6 +68,6 @@ git clone git@github.com:0xttfx/ip-do_aws-rds.git && cd ip-*
  - altere conforme sua necessidade.
 
 ```
-* * * * * 	user	/usr/bin/bash -x /usr/local/tools/ip-do_aws-rds/script-0.6.sh >> /usr/local/tools/log/exec-script-0.6-$(date --date="today" +\%d\%m\%Y_\%H\%M\%S).log 2>&1
+* * * * * 	user	/usr/bin/bash -x /usr/local/tools/ip-do_aws-rds/script-0.7.sh >> /usr/local/tools/log/exec-script-0.7-$(date --date="today" +\%d\%m\%Y_\%H\%M\%S).log 2>&1
 0 0 * * *   user	find /usr/local/tools/log/ -type f -mtime +3 -name 'exec-*.log' -exec rm {} +
 ```
