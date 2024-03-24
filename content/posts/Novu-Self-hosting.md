@@ -38,7 +38,7 @@ Novu is based on  two componets
 ### Architecture
 Novu's Object Communication Layer - OCL is a framework that separates communication tasks into specialized components, similar to microservices, that handle specific functions, such as messaging and data management.
 
-!architecture[images/Novu/Novu_Architecture_v2.png]
+![architecture](/images/Novu/Novu_Architecture_v2.png)
 
 ## Let's go
 
