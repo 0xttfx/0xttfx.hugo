@@ -72,7 +72,7 @@ JWT_SECRET=<secret>
 STORE_ENCRYPTION_KEY=<key>
 
 # Host
-HOST_NAME=https://novu.youdns.com.br
+HOST_NAME=https://novu.yourdns.com.br
 
 # General
 # available values 'dev', 'test', 'production', 'ci', 'local'
@@ -137,7 +137,7 @@ server {
 
     client_max_body_size 20M;
 
-    server_name youdns.com.br xxx.xxx.xxx.xxx;
+    server_name yourdns.com.br xxx.xxx.xxx.xxx;
 
     access_log  /var/log/nginx/novu_access.log;
     error_log /var/log/nginx/novu_error.log;
