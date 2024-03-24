@@ -26,11 +26,11 @@ ShowRssButtonInSectionTermList: true
 UseHugoToc: true
 ---
 
-# Novu - The open-source notification infraestructure for developers.
+# Novu - The open-source notification infrastructure for developers.
 The objective here is to show the configuration of the .env file and the NGINX reverse proxy, which was my biggest difficulty due to the lack of essential details in the project documentation for this purpose.
 
 ## How Does Novu Work?
-Novu is based on  two componets
+Novu is based on  two components
 
 - An API for data exchange
 - A panel to design notifications and their logical rules
