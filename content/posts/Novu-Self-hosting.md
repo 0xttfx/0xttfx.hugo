@@ -1,23 +1,20 @@
 ---
 title: "Novu Self Hosting"
+description: "Novu self-hosted"
 date: 2024-03-23T18:42:59-03:00
-# weight: 1
-# aliases: ["/first"]
 tags: ["Linux","open-source","notification infrastructure","engineering"]
-author: "Me"
-# author: ["Me", "You"] # multiple authors
-showToc: true
-TocOpen: false
-draft: false
-hidemeta: false
-comments: false
-description: "Desc Text."
-canonicalURL: "https://canonical.url/to/page"
-disableHLJS: true # to disable highlightjs
-disableShare: false
-disableHLJS: false
+author: "0xttfx"
+toc: true
 hideSummary: false
-searchHidden: true
+comments: true
+showComments: true
+showDate: true
+showTitle: true
+showShare: true
+disableShare: false
+norss: false
+nosearch: false
+searchHidden: false
 ShowReadingTime: true
 ShowBreadCrumbs: true
 ShowPostNavLinks: true
