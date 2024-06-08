@@ -3,8 +3,7 @@ title: "About"
 date: 2024-06-07T11:52:54-03:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["Linux"]
-author: "Me"
+author: "0xttfx"
 # author: ["Me", "You"] # multiple authors
 showToc: true
 TocOpen: false
@@ -26,19 +25,21 @@ ShowRssButtonInSectionTermList: true
 UseHugoToc: true
 ---
 
-🖖 🏴‍☠️
+🖖 
 
-Hey! I'm Faioli, aka 0xttfx 
+Hey! I'm Faioli, aka 0xttfx 🏴‍☠️
 
-![Im](/thiago_9.png)
+![Im](/thiago_11.png)
 
-After more than 25 years of experience, I think I'm an expert in IT infrastructure, Unix and Linux systems administrator, cloud computing, platform engineer, {S,N} RE, cyber security, geek and 🏴‍☠️  hacker culture enthusiast
+After more than 25 years of experience, I think I'm an expert in IT infrastructure, Unix and Linux systems administrator, cloud computing, platform engineer, {S,N} RE, cyber security, geek and hacker culture enthusiast
 
+![Logo](/logo_3.svg)
 
 I also had the pleasure of being invited by the fearless friend [@coffinix](https://area31.net.br/wiki/Usu%C3%A1rio:Coffnix) through the master [@cybernetus](https://cybernetus.com) to be a founding member (with the train already moving under the tracks...) of [Area31 Hackerspace - Minas Gerais - Brazil](https://area31.net.br) 🏴‍☠️
 
+![area31](/Area31_2.png)
 
-This blog is about me, unix, linux, infrastructure, cyber security, hacker culture and what I feel like talking about :)
+This site is about me, unix, linux, infrastructure, cyber security, hacker culture and what I feel like talking about :)
 
 
 Have fun at this place and get in touch if you want...

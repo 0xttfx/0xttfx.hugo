@@ -7,11 +7,11 @@ author: "0xttfx"
 toc: true
 hideSummary: false
 comments: true
-showComments: true
+#showComments: true
 showDate: true
 showTitle: true
 showShare: true
-disableShare: false
+#disableShare: false
 norss: false
 nosearch: false
 searchHidden: false
@@ -20,7 +20,7 @@ ShowBreadCrumbs: true
 ShowPostNavLinks: true
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
-UseHugoToc: true
+#UseHugoToc: true
 ---
 
 # Novu - The open-source notification infrastructure for developers.
