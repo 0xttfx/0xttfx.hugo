@@ -160,37 +160,37 @@ summaryLength = 70  # number of words for article summaries
     # these links (menu.icons) will be added as icon links below the main nav
     [[menu.icons]]
          identifier = "github"
-         name = "GitHub"
+         name = ""
          url = "https://github.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "discord"
-         name = "Discord"
+         name = ""
          url = "https://discord.gg/jMztSAgJ"
          weight = 10
     [[menu.icons]]
          identifier = "twitter"
-         name = "X"
+         name = ""
          url = "https://twitter.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "instagram"
-         name = "Instagram"
+         name = ""
          url = "https://instagram.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "linkedin"
-         name = "Linkedin"
+         name = ""
          url = "https://linkedin.com/in/thiagofaioli"
          weight = 10
     [[menu.icons]]
          identifier = "telegram"
-         name = "Telegram"
+         name = ""
          url = "https://t.me/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "email"
-         name = "Email"
+         name = ""
          url = "thiago.faioli@bsd.com.br"
          weight = 10
 #    [[menu.icons]]
