@@ -2,3 +2,9 @@
 	path = public
 	url = git@github.com:0xttfx/0xttfx.github.io
 	branch = master
+[submodule "themes/hello-4s3ti"]
+	path = themes/hello-4s3ti
+	url = https://github.com/4s3ti/hugo-theme-hello-4s3ti.git
+[submodule "themes/terminalcv"]
+	path = themes/terminalcv
+	url = https://github.com/coolapso/hugo-theme-terminalcv.git
