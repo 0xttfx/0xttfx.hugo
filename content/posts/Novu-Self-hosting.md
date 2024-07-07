@@ -39,7 +39,6 @@ Novu's Object Communication Layer - OCL is a framework that separates communicat
 
 ## Let's go
 
-
 - Clone Novu repo
 
 ```bash
