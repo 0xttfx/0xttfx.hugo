@@ -307,5 +307,5 @@ Fin
 	 $ gnuplot /tmp/deslocamento.txt
 	 ```
 
-![deslocamento.png](/images/NTP/deslocamento.png)
+![deslocamento.png](/static/images/NTP/deslocamento.png)
  
