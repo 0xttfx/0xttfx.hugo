@@ -9,7 +9,7 @@ theme = "hugo-ficurinia"
 # this will be included in the footer after the current year the site is last
 # built, followed by the (c) symbol
 # you can use markdown inside this field
-copyright = "0xttfx - [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause)"
+copyright = "Running on [OpenBSD](https://openbsd.org) and [httpd](https://man.openbsd.org/httpd.8) |  [0xttfx](https://0xttfx.tcpip.net.br) - [BSD-3-Clause](https://spdx.org/licenses/BSD-3-Clause)" 
 
 paginate = 5  # number of articles per page in the index
 summaryLength = 70  # number of words for article summaries
@@ -21,11 +21,6 @@ summaryLength = 70  # number of words for article summaries
      headline = "Só mais um SysAdmin"
      bio = "Vicissitudes e adjacências..."
 
-     [author]
-         name = "Thiago Torres Faioli"
-         image = "img/faioli.jpg"
-         headline = "Só mais um SysAdmin"
-         bio = "Vicissitudes e adjacências..."
 
      posts = "posts"  # content directory where to find home page posts; default searches in "posts" and "post"
      showPostsLink = true  # show or hide the link to the simple post list
@@ -90,7 +85,7 @@ summaryLength = 70  # number of words for article summaries
      #commento = "https://0xttfx.github.io/js/commento.js"
  
      # enable comments support with cactus comments (cactus.chat)
-     cactusCommentsSiteName = "0xttfx.github.io"
+     cactusCommentsSiteName = "0xttfx.tcpip.net.br"
      cactusCommentsServerName = "cactus.chat"
      cactusCommentsHomeserver = "https://matrix.cactus.chat:8448"
  
@@ -152,46 +147,46 @@ summaryLength = 70  # number of words for article summaries
     # other elements in this menu are added automatically from the "pages" folder
     # the folder it will look into can be customized with the pages variable
     # in params above
-#    [[menu.main]]
-#        identifier = "about"
-#        name = "About"
-#        url = "/about/"
-#        weight = 10
+    [[menu.main]]
+         identifier = "about"
+         name = "CV"
+         url = "https://cv0xttfx.tcpip.net.br"
+         weight = 11
     # these links (menu.icons) will be added as icon links below the main nav
     [[menu.icons]]
          identifier = "github"
-         name = "GitHub"
+         name = ""
          url = "https://github.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "discord"
-         name = "Discord"
+         name = ""
          url = "https://discord.gg/jMztSAgJ"
          weight = 10
     [[menu.icons]]
          identifier = "twitter"
-         name = "X"
+         name = ""
          url = "https://twitter.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "instagram"
-         name = "Instagram"
+         name = ""
          url = "https://instagram.com/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "linkedin"
-         name = "Linkedin"
+         name = ""
          url = "https://linkedin.com/in/thiagofaioli"
          weight = 10
     [[menu.icons]]
          identifier = "telegram"
-         name = "Telegram"
+         name = ""
          url = "https://t.me/0xttfx"
          weight = 10
     [[menu.icons]]
          identifier = "email"
-         name = "Email"
-         url = "thiago.faioli@bsd.com.br"
+         name = ""
+         url = "thiago@tcpip.net.br"
          weight = 10
 #    [[menu.icons]]
 #        identifier = "keybase"
