@@ -24,6 +24,8 @@ ShowRssButtonInSectionTermList: true
 #UseHugoToc: true
 ---
 
+![DO-AWS](/images/IPDO/docean_aws.png)
+
 # ipdo-awsrds
 
 ## Função
