@@ -1,15 +1,16 @@
 ---
+
 title: "DevOps Fundamentos"
 date: 2024-05-07T02:31:50-03:00
-author: "0xttfx"
+author: "Faioli a.k.a 0xttfx"
 toc: true
 hideSummary: false
 comments: true
-#showComments: true
+showComments: true
 showDate: true
 showTitle: true
 showShare: true
-#disableShare: false
+disableShare: false
 norss: false
 nosearch: false
 searchHidden: false
@@ -18,7 +19,7 @@ ShowBreadCrumbs: true
 ShowPostNavLinks: true
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
-#UseHugoToc: true
+UseHugoToc: true
 ---
 
 # Princípios

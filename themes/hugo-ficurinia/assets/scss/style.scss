@@ -90,7 +90,7 @@ $main_font: {{ .Site.Params.fontFamily | default "JetBrains Mono" }};
 $title_font: {{ .Site.Params.titleFontFamily | default "$main_font" }};
 $mono_font: {{ .Site.Params.monospaceFontFamily | default "JetBrains Mono" }};
 $symbols_font: "Symbols Nerd Font";
-$content_width: {{ .Site.Params.contentWidth | default "1000px" }};
+$content_width: {{ .Site.Params.contentWidth | default "1300px" }};
 $border_radius: 10px;
 $margin: 15px;
 

@@ -8,3 +8,13 @@
 [submodule "themes/terminalcv"]
 	path = themes/terminalcv
 	url = https://github.com/coolapso/hugo-theme-terminalcv.git
+[submodule "themes/blowfish"]
+	path = themes/blowfish
+	url = https://github.com/nunocoracao/blowfish.git
+	branch = main
+[submodule "themes/hugo-flex"]
+	path = themes/hugo-flex
+	url = https://github.com/ldeso/hugo-flex.git
+[submodule "themes/FixIt"]
+	path = themes/FixIt
+	url = https://github.com/hugo-fixit/FixIt.git

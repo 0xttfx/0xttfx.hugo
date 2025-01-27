@@ -2,15 +2,15 @@
 title: "Cybersecurity DoS DDoS UDP Flood"
 date: 2024-05-09T00:38:46-03:00
 tags: ["linux","openbsd","freebsd","ipfw","pf","nftables","iptables","cybersecurity","ddos","dos","engineering","firewall"]
-author: "0xttfx"
+author: "Faioli"
 toc: true
-hideSummary: false
+#hideSummary: false
 comments: true
-#showComments: true
+showComments: true
 showDate: true
 showTitle: true
 showShare: true
-#disableShare: false
+disableShare: false
 norss: false
 nosearch: false
 searchHidden: false
@@ -19,10 +19,7 @@ ShowBreadCrumbs: true
 ShowPostNavLinks: true
 ShowWordCount: true
 ShowRssButtonInSectionTermList: true
-#UseHugoToc: true
-
-
-
+UseHugoToc: true
 ---
 
 Um ataque DDoS UDP flood é uma forma de ataque distribuído de negação de serviço que explora serviços vulneráveis na Internet que utilizam o protocolo UDP - User Datagram Protocol para inundar um alvo com uma grande quantidade de tráfego de pacotes UDP. E como cada novo pacote UDP recebido pelo servidor, consome recursos computacionais, rapidamente o servidor vai consumindo seus recursos devido a sobrecarga até exaurir o poder computacional o impedindo de processar e responder requisições normais dos usuários, ficando indisponível.
