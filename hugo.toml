@@ -10,6 +10,9 @@
 # See: https://gohugo.io/getting-started/configuration/
 # -------------------------------------------------------------------------------------
 
+# suprimindo warning de versãoi dev
+ignoreLogs = ['warning-dev-version']
+
 # website title
 title = "0xttfx"
 # Hostname (and path) to the root

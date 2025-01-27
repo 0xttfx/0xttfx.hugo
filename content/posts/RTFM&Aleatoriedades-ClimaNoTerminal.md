@@ -1,29 +1,20 @@
 ---
 title: "RTFM & Aleatoriedades - Clima No Terminal"
 date: 2025-01-22T17:13:52-03:00
-# weight: 1
-# aliases: ["/first"]
-tags: ["Linux", "CURL", "Terminal", "Bash", "Shell", " "]
 author: "Faioli a.k.a 0xttfx"
-# author: ["Me", "You"] # multiple authors
-showToc: true
-TocOpen: false
+tags:
+  - CURL
+  - Terminal
+  - Bash
+  - Shell
+  - Linux
+  - Basics
+  - Wttr
+categories:
+  - Linux
+collections:
+  - Getting Started
 draft: false
-hidemeta: false
-comments: false
-description: "Vendo o Clima pelo Terminal"
-canonicalURL: #"https://canonical.url/to/page"
-disableHLJS: true # to disable highlightjs
-disableShare: false
-disableHLJS: false
-hideSummary: false
-searchHidden: true
-ShowReadingTime: true
-ShowBreadCrumbs: true
-ShowPostNavLinks: true
-ShowWordCount: true
-ShowRssButtonInSectionTermList: true
-UseHugoToc: true
 ---
 
 ![climaNoTerminal](/images/ClimaCMD/climaNoTerminal.png)
