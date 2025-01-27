@@ -215,7 +215,7 @@ Weather report: Belo Horizonte, Brazil
 ## Só isso ?
 Não! RTFM [Wttr](https://github.com/chubin/wttr.in) para muito mais opções!
 
-- Vou também pode acessar o --help via `curl`
+- Você também pode acessar o `--help`:
   ```bash
   curl wttr.in/:help
   ```
