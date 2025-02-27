@@ -136,5 +136,35 @@ groups:
   - `labels`: rótulos adicionais para categorizar o alerta.
   - `annotations`: informações adicionais que podem ser incluídas na notificação do alerta.
 
+
+
+## Tips
+
+ Ao fazer uso dos exemplos supracitados você irá notar que as `rules` irão triggar diversos filesystens como `tmpfs` e mountpoint `/run/*`, `vfat` e `/boot/efi` e todo sistema de arquivos que tenha espaço livre inferior ao threshold definido de **10GB**, independente se a taxa de escrita é alta ou baixa!
+
+- Esse comportamento ocorre porque, mesmo com uma taxa de escrita baixa, o valor atual de bytes livres já é inferior ao threshold definido de **10 GB**. O comportamento do `predict_linear` é extrapolar a partir do valor atual que já é crítico, independentemente da taxa de variação de escrita.
+
+Segue uma modo simples de contornar esse cenário:
+
+- Que é ajustando a regra de previsão para considerar somente pontos de montagens de sistemas de arquivos com espaço livre acima do limiar configurado.
+  - Com por exemplo uma condição adicional como essa: `node_filesystem_free_bytes > 10 * 1024^3` que garante que servidores que já estão abaixo de 10GB (mas estáveis) não dispararão o alerta.
+
+```yaml
+- name: disk_alerts
+  rules:
+  - alert: SistemaDeArquivosCriticamenteBaixoEm4Horas
+    expr: node_filesystem_free_bytes > 10 * 1024^3 and predict_linear(node_filesystem_free_bytes[1h], 4 * 3600) < 10 * 1024^3
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "A treta será doida em 4 horas"
+      description: "O sistema de arquivos no servidor {{ $labels.instance }} terá menos de 20 GBytes disponíveis em 4 horas."
+
+```
+
+
 Essa e o método que me permitiu sair dos alarmes de limiares fixos que não atendem de maneira satisfatória crescimentos tão velozes que, no momento do disparo do do alerta, o tempo é tao curto ou tarde demais para uma atuação técnica...
+
+
 
