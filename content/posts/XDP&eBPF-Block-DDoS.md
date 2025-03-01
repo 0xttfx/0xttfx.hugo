@@ -1,5 +1,5 @@
 ---
-title: "XDP & eBPF Block DDoS"
+title: "XDP & eBPF Block DoS"
 date: 2025-01-22T17:13:52-03:00
 author: "Faioli a.k.a 0xttfx"
 tags:
@@ -15,11 +15,14 @@ collections:
 draft: false
 ---
 
-Segue  um delírio pra esboçar um delírio idealiza a pretensão de uma solução funcional que combina um programa [XDP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/introduction.html#what-is-xdp)/[eBPF](https://ebpf.io/) em C com um script em Bash(antes de usar Go)  para monitorar o tráfego e atualizar dinamicamente um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) [eBPF](https://ebpf.io/) com sources IPs que devem ser bloqueados quando idenficado um possível ataque de negação. 
+![Netfilter-packet-flow](/img/XDPeBPFDoS/eBPF.png)
 
-- Nesse cenário, o programa XDP já está instalado na interface de rede e bloqueia pacotes provenientes de IPs listados no [`map`](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps). 
-- O script em Bash monitora  o arquivo de subsistema de rastreamento `conntrack` do Netfilter `/proc/net/nf_conntrack` determinar se o número de conexões ativas ultrapassou o threshold configurado, que ao ser atingido:
-	- um log gerado por regras específicas `nftables` é analisado para identificar com base em uma "janela" de tempo, qual source IP ultrapassou o limite de conexões: indicando ser um possível ataque DoS:
+
+Segue um esboço de uma solução funcional que combina um programa [XDP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/introduction.html#what-is-xdp)/[eBPF](https://ebpf.io/) em C com um script em Bash(antes de usar Go)  para monitorar o tráfego e atualizar dinamicamente um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) [eBPF](https://ebpf.io/) com sources IPs que devem ser bloqueados quando idenficado um possível ataque [DoS](https://attack.mitre.org/techniques/T0814/). 
+
+- Nesse cenário, o programa XDP/eBPF já está instalado na interface de rede e bloqueia pacotes provenientes de IPs listados no [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps). 
+- O script em Bash monitora  o arquivo de subsistema de rastreamento [conntrack](https://conntrack-tools.netfilter.org) do [Netfilter](https://www.netfilter.org/) [/proc/net/nf_conntrack](https://conntrack-tools.netfilter.org/manual.html#conntrack) para determinar se o número de conexões ativas ultrapassou o threshold configurado, e que ao ser atingido:
+	- um log gerado por regras específicas [nftables](https://www.netfilter.org/projects/nftables/index.html) é analisado para identificar com base em uma "janela" de tempo, qual source IP ultrapassou o limite de conexões: indicando ser um possível ataque DoS:
 		- que então é inserido no `map` eBPF, fazendo com que o programa XDP passe a descartar os pacotes desses endereços.
 
 
@@ -37,15 +40,16 @@ Segue  um delírio pra esboçar um delírio idealiza a pretensão de uma soluç�
 - libxdp-devel 
 - xdp-tools 
 - bpftool kernel-headers
-- iperf
+- perf
+- nftables
+- iproute2
 
 
 ## 2. Programa XDP/eBPF
 
-O programa utiliza um [`map`](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) eBPF do tipo HASH para armazenar os IPs que devem ser bloqueados. E para cada pacote recebido, é verificado se source IP consta no mapa. Se sim, o pacote é descartado ([XDP_DROP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)); caso contrário, ele é encaminhado normalmente ([XDP_PASS](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)).
+O programa utiliza um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) eBPF do tipo HASH para armazenar os IPs que devem ser bloqueados. E para cada pacote recebido, é verificado se source IP consta no mapa. Se sim, o pacote é descartado ([XDP_DROP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)); caso contrário, ele é encaminhado normalmente ([XDP_PASS](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)).
 
->[!INFO]
->Para **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/xdp-block-ddos)
+>[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/xdp-block-ddos)
 
 ---
 
@@ -204,13 +208,13 @@ ip link set dev eth0 xdp off
 ## 4. Script Bash para Monitoramento e Atualização do Mapa
 Segue script em Bash que implementa uma abordagem híbrida para detectar um ataque DDoS: 
 
-- Monitorando o número de conexões em `/proc/net/nf_conntrack`.
+- Monitorando o número de conexões em [/proc/net/nf_conntrack](https://conntrack-tools.netfilter.org/manual.html#conntrack).
 
 - E existindo um pico suspeito, analisa os logs do `nftables` para identificar IPs suspeitos devido a sua alta frequência.
 
 - Para então atualizar o mapa eBPF (fixado em um caminho configurável) para bloquear os IPs suspeitos.
 
->[!INFO] Para **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/monitor_ddos)
+>[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/monitor_ddos)
 
 ---
 
@@ -462,7 +466,9 @@ table inet ddos_filter {
     ```
 
 
+## 6. Testes de Validação
 
+... calma! To fazendo
 
 
 
