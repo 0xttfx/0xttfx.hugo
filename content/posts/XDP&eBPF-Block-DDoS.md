@@ -15,8 +15,10 @@ collections:
 draft: false
 ---
 
+
 ![Netfilter-packet-flow](/img/XDPeBPFDoS/eBPF.png)
 
+---
 
 Segue um teste para aplicar os conceitos de eBPF! É um esboço de uma solução que espera ser funcional e que combina um programa [XDP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/introduction.html#what-is-xdp)/[eBPF](https://ebpf.io/) em C com um script em Bash(antes de usar Go) para monitorar o tráfego e atualizar dinamicamente um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) [eBPF](https://ebpf.io/) com sources IPs que devem ser bloqueados quando idenficado um possível ataque [DoS](https://attack.mitre.org/techniques/T0814/). 
 
@@ -67,12 +69,22 @@ Segue um teste para aplicar os conceitos de eBPF! É um esboço de uma solução
 
   O método de contagem, que usa wc -l para contar linhas, pode não refletir exatamente a taxa de chegada de novas conexões, especialmente em sistemas de alta performance, onde as entradas podem ser criadas e removidas em milissegundos.
 
+  O uso de um script em Bash para monitorar o arquivo de conntrack e processar logs introduzir latência. Em um cenário de ataque DoS, a rapidez na detecção e na inserção do IP no map é crucial para minimizar o impacto do ataque.
+  
+  A comunicação entre a camada de monitoramento em user space e o programa eBPF no kernel tem atrasos, permitindo que pacotes passem antes da inserção no map.
+
+  O arquivo /proc/net/nf_conntrack pode não refletir com precisão o estado em tempo real das conexões, especialmente em ambientes com alto volume de tráfego.
+
+  Basear a detecção apenas em logs e conexões pode gerar falsos positivos ou, inversamente, deixar passar ataques se a janela de tempo não for bem ajustada.
+
+  Usar **tracepoints e perf events**  definitivamente é melhor, principalmente por estar em kernel space. Mas fica para outro post. Por agora, vale chamar a atenção para os recursos usados...
+
 
 ## 2. Programa XDP/eBPF
 
 O programa utiliza um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) eBPF do tipo HASH para armazenar os IPs que devem ser bloqueados. E para cada pacote recebido, é verificado se source IP consta no mapa. Se sim, o pacote é descartado ([XDP_DROP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)); caso contrário, ele é encaminhado normalmente ([XDP_PASS](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/implementation/xdp_actions.html)).
 
->[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/xdp-block-ddos)
+>[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/xdp-block-dos)
 
 ---
 
@@ -244,11 +256,12 @@ Segue script em Bash que implementa uma abordagem híbrida para detectar um ataq
 
 - Para então atualizar o mapa eBPF (fixado em um caminho configurável) para bloquear os IPs suspeitos.
 
->[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/monitor_ddos)
+>[!INFO] **RTFM** e código atualizado: [repo Git](https://github.com/0xttfx/monitor-dos)
 
 ---
 
 ```bash
+
 #!/bin/bash
 
 # Valores padrões
@@ -258,7 +271,7 @@ LOG_THRESHOLD_DEFAULT=5
 INTERVAL_DEFAULT=10
 LOG_FILE_DEFAULT="/var/log/nftables.log"
 
-# Inicializa variáveis com os valores padrões
+# Inicializa variáveis com os valores padrão
 MAP_PIN="$MAP_PIN_DEFAULT"
 THRESHOLD_CONN="$THRESHOLD_CONN_DEFAULT"
 LOG_THRESHOLD="$LOG_THRESHOLD_DEFAULT"
@@ -273,13 +286,13 @@ Uso: $(basename "$0") [opções]
 Opções:
   -m MAP_PIN         Caminho do mapa eBPF pinado (padrão: $MAP_PIN_DEFAULT)
   -c THRESHOLD_CONN  Número de conexões para acionar análise (padrão: $THRESHOLD_CONN_DEFAULT)
-  -l LOG_THRESHOLD   Número de ocorrências de um IP nos logs para bloqueá-lo (padrão: $LOG_THRESHOLD_DEFAULT)
+  -l LOG_THRESHOLD   Número mínimo de ocorrências de um IP nos logs para bloqueá-lo (padrão: $LOG_THRESHOLD_DEFAULT)
   -i INTERVAL        Intervalo de tempo para verificação em segundos (padrão: $INTERVAL_DEFAULT)
   -f LOG_FILE        Caminho para o arquivo de log do nftables (padrão: $LOG_FILE_DEFAULT)
   -h                 Exibe esta mensagem de ajuda e sai
 
 Exemplo:
-  sudo $(basename "$0") -m /sys/fs/bpf/blocked_ips -c 500 -l 10 -i 15 -f /var/log/nftables.log
+  sudo $(basename "$0") -m /sys/fs/bpf/blocked_ips -c 1500 -l 10 -i 15 -f /var/log/nftables.log
 
 EOF
 }
@@ -311,6 +324,35 @@ echo "  INTERVAL:        $INTERVAL"
 echo "  LOG_FILE:        $LOG_FILE"
 echo
 
+# Função para pinagem automática do mapa eBPF se ainda não estiver pinado.
+auto_pin_map() {
+    if [ ! -e "$MAP_PIN" ]; then
+        echo "O mapa eBPF não está pinado em $MAP_PIN. Tentando pinar automaticamente..."
+        # Procura o mapa "blocked_ips" usando bpftool.
+        # O comando bpftool map show normalmente lista linhas como:
+        # "1: map 0 pinned /sys/fs/bpf/blocked_ips  ... blocked_ips"
+        # Aqui, usamos grep para encontrar a linha que contenha "blocked_ips"
+        map_id=$(bpftool map show 2>/dev/null | grep -m1 "blocked_ips" | awk '{print $1}' | tr -d ':')
+        if [ -n "$map_id" ]; then
+            bpftool map pin id "$map_id" "$MAP_PIN"
+            if [ $? -eq 0 ]; then
+                echo "Mapa 'blocked_ips' (ID: $map_id) pinado com sucesso em $MAP_PIN."
+            else
+                echo "Erro ao piná-lo. Verifique as permissões e a existência do mapa."
+                exit 1
+            fi
+        else
+            echo "Erro: não foi possível encontrar o mapa 'blocked_ips'."
+            exit 1
+        fi
+    else
+        echo "Mapa eBPF já está pinado em $MAP_PIN."
+    fi
+}
+
+# Executa a pinagem automática do mapa
+auto_pin_map
+
 # Função: Converte um IP (formato x.x.x.x) para valor hexadecimal (big-endian)
 ip_to_hex() {
     local ip="$1"
@@ -323,8 +365,13 @@ block_ip() {
     local ip="$1"
     local key_hex
     key_hex=$(ip_to_hex "$ip")
+    
+    # Converte a string hexadecimal em bytes separados por espaços
+    local key_bytes
+    key_bytes=$(echo "$key_hex" | sed 's/\(..\)/\1 /g' | tr '[:upper:]' '[:lower:]')
+    
     echo "Bloqueando IP suspeito: $ip (chave: $key_hex)"
-    bpftool map update pinned "$MAP_PIN" key "$key_hex" value 0x1 2>/dev/null
+    bpftool map update pinned "$MAP_PIN" key hex $key_bytes value hex 01 00 00 00 2>/dev/null
 }
 
 # Função: Retorna a contagem de conexões em /proc/net/nf_conntrack
@@ -336,32 +383,37 @@ get_conn_count() {
     fi
 }
 
-# Loop principal de monitoramento
-while true; do
-    conn_count=$(get_conn_count)
-    echo "Conexões atuais: $conn_count"
 
-    if [ "$conn_count" -gt "$THRESHOLD_CONN" ]; then
-        echo "Alerta: Pico de conexões detectado ($conn_count > $THRESHOLD_CONN)."
-        echo "Analisando os logs do nftables para identificar IPs suspeitos..."
+# Função: Loop principal de monitoramento
+main() {
+    while true; do
+        conn_count=$(get_conn_count)
+        echo "Conexões atuais: $conn_count"
 
-        # Captura uma janela de logs do nftables durante o intervalo definido.
-        # 'timeout' limita a execução do tail, 'grep' filtra linhas com "SRC=",
-        # 'sed' extrai o IP, e 'awk' seleciona IPs com ocorrências acima do limite.
-        suspicious_ips=$(timeout "$INTERVAL" tail -n 1000 "$LOG_FILE" 2>/dev/null | \
-            grep "SRC=" | sed -n 's/.*SRC=\([0-9.]\+\).*/\1/p' | sort | uniq -c | \
-            awk -v thresh="$LOG_THRESHOLD" '$1 >= thresh {print $2}')
+        if [ "$conn_count" -gt "$THRESHOLD_CONN" ]; then
+            echo "Alerta: Pico de conexões detectado ($conn_count > $THRESHOLD_CONN)."
+            echo "Analisando os logs do nftables para identificar IPs suspeitos..."
 
-        for ip in $suspicious_ips; do
-            block_ip "$ip"
-        done
-    else
-        echo "Número de conexões dentro do esperado."
-    fi
+            suspicious_ips=$(timeout "$INTERVAL" tail -n 1000 "$LOG_FILE" 2>/dev/null | \
+                grep "SRC=" | sed -n 's/.*SRC=\([0-9.]\+\).*/\1/p' | sort | uniq -c | \
+                awk -v thresh="$LOG_THRESHOLD" '$1 >= thresh {print $2}')
 
-    sleep "$INTERVAL"
-done
-```
+            for ip in $suspicious_ips; do
+                block_ip "$ip"
+            done
+        else
+            echo "Número de conexões dentro do esperado."
+        fi
+
+        sleep "$INTERVAL"
+    done
+}
+
+# Executa o loop principal somente se o script estiver sendo chamado diretamente
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main
+fi
+``` 
 
 ---
 
@@ -434,9 +486,9 @@ done
   2. Exibe uma mensagem indicando que o IP está sendo bloqueado, junto com sua chave hexadecimal.
   3. Utiliza o comando:
      ```bash
-     bpftool map update pinned "$MAP_PIN" key "$key_hex" value 0x1 2>/dev/null
+     bpftool map update pinned "$MAP_PIN" key hex $key_bytes value hex 01 00 00 00 2>/dev/null
      ```
-     para atualizar o mapa eBPF, inserindo a chave e definindo o valor (neste caso, `0x1` indica o bloqueio).
+     para atualizar o mapa eBPF, inserindo a chave e definindo o valor (neste caso, `01` indica o bloqueio).
 
 ---
 
@@ -457,12 +509,12 @@ done
      - A função `get_conn_count` é chamada para obter o número atual de conexões.
      - É exibida uma mensagem com o número de conexões.
   
-  1. **Verificação de Pico de Conexões:**  
+  2. **Verificação de Pico de Conexões:**  
      - Se o número de conexões ultrapassa o limite definido por `THRESHOLD_CONN`, o script:
        - Exibe um alerta indicando que houve um pico.
        - Inicia a análise dos logs do nftables para identificar IPs suspeitos.
   
-  1. **Análise dos Logs do nftables:**  
+  3. **Análise dos Logs do nftables:**  
      - Utiliza uma cadeia de comandos para extrair os IPs:
        ```bash
        suspicious_ips=$(timeout "$INTERVAL" tail -n 1000 "$LOG_FILE" 2>/dev/null | \
@@ -477,10 +529,10 @@ done
          - `sort | uniq -c`: Ordena os IPs e conta as ocorrências de cada um.
          - `awk -v thresh="$LOG_THRESHOLD" '$1 >= thresh {print $2}'`: Filtra apenas os IPs cuja contagem seja maior ou igual ao valor definido em `LOG_THRESHOLD`.
   
-  1. **Bloqueio dos IPs Suspeitos:**  
+  4. **Bloqueio dos IPs Suspeitos:**  
      - Para cada IP identificado como suspeito na etapa anterior, a função `block_ip` é chamada para inserir o IP no mapa eBPF.
   
-  1. **Intervalo de Espera:**  
+  5. **Intervalo de Espera:**  
      - Ao final de cada iteração, o script aguarda o número de segundos definido por `INTERVAL` antes de iniciar a próxima verificação.
 
 - **Loop:**  
@@ -552,7 +604,7 @@ table inet ddos_filter {
 		- A primeira linha diz ao rsyslog: se a mensagem contiver o texto `"DDoS_ALERT:"`, envie-a para o arquivo `/var/log/nftables.log`. O hífen (`-`) antes do caminho indica gravação assíncrona, reduzindo o overhead.
 		- A linha `& ~` impede que essas mensagens sejam processadas por outras regras, evitando duplicidade.
 	
-	1. **Reinicie o serviço**
+	2. **Reinicie o serviço**
 	 ```bash
      sudo systemctl restart rsyslog
      ```
@@ -574,5 +626,246 @@ table inet ddos_filter {
 
 ## 6. Testes de Validação
 
-... calma! To fazendo
+Para validar a solução. você pode seguir uma série de testes que abrangem cada componente e a integração completa. Abaixo, segue um passo a passo detalhado com sugestões de ferramentas e métodos:
+
+
+## 1. Preparação do Ambiente
+- **Requisitos:**
+    
+    - 02 VMs Linux Fedora 41.
+    - Ferramentas instaladas:
+	    - clang/llvm, 
+	    - bpftool, 
+	    - nftables, 
+	    - rsyslog, 
+	    - tcpdump, 
+	    - hping3 ou scapy.
+    - SUDO para realizar os passos que exijam privilégio root.
+
+
+## 2. Testando Individualmente Cada Componente
+
+### 2.1. Programa XDP/eBPF
+1. **Diretório de teste**
+
+```bash
+$ mkdir /tmp/src && cd /tmp/src
+```
+
+1. **Compilação e Carregamento:**
+    
+    - Compile o programa:
+	    - Clone o repositório
+	
+        ```bash
+        $ git clone https://github.com/0xttfx/xdp-block-dos.git
+        ```
+    - Compile o código
+
+	    ```bash
+	    $ make all
+		
+		clang -O2 -g -target bpf -c -Wall -Werror src/xdp-block-dos-0.1.0.c -o xdp-block-dos.o
+	    ```        
+    - Carregue o programa na interface de rede (supondo `eth0`):
+        
+        ```bash
+        sudo ip link set dev eth0 xdp obj xdp_ddos_blocker.o sec xdp
+        ```
+        
+3. **Verificação:**
+    
+    - Verifique se o programa está carregado:
+        
+    ```bash
+    $ sudo ip -details link show dev enp1s0
+		 
+	2: enp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdp qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+		    link/ether 52:54:00:9a:8d:fd brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 65535 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 parentbus virtio parentdev virtio1 
+	prog/xdp id 92 name xdp_block_dos tag 20447cf6515f37e3 jited load_time 2787963305254 created_by_uid 0 btf_id 140
+    ```
+    - Veja se o mapa foi criado e colete o ID
+
+	 ```bash
+	 $ sudo bpftool map show 2>/dev/null | grep -m1 "blocked_ips" | awk '{print $1}' | tr -d ':'
+	 22
+	 ```
+    - Pine o arquivo `map`
+    
+    ```bash
+    $ sudo bpftool map pin id "22" "/sys/fs/bpf/blocked_ips"
+	```
+	- Use o `bpftool` para fazer um dump do `map` eBPF
+	
+	```bash
+	$ sudo bpftool map dump pinned /sys/fs/bpf/blocked_ips
+	[]
+    ```
+
+4. **Teste Funcional:**
+    
+    - Gere tráfego a partir de uma máquina ou usando ferramentas como `hping3` de um IP que não esteja bloqueado
+	    - Verifique que os pacotes seguem normalmente (XDP_PASS).
+		    - Em seguida, adicione manualmente o IP ao mapa (usando o bpftool)
+			    - E verifique se os pacotes são descartados (XDP_DROP).
+			
+		    1. Converta o IP da VM que está disparando o tráfego, para hexadecima
+	    
+		    ```bash
+		    $  ip="192.168.0.115"; IFS='.'; read -r a b c d <<< "$ip"; printf "%02X%02X%02X%02X\n" "$a" "$b" "$c" "$d" | sed 's/\(..\)/\1 /g' | tr '[:upper:]' '[:lower:]'
+			c0 a8 00 73 
+		    ```
+		    1. Agora insira o ip no `map` eBPF
+	    
+		    ```bash
+		    $ sudo bpftool map update pinned '/sys/fs/bpf/blocked_ips' key hex C0 A8 00 73 value hex 01 00 00 00
+		    ```
+			1. E faça um dump do `map`para verificar se a insserçã́o ocorreu
+		
+			```bash
+			$ sudo bpftool map dump pinned /sys/fs/bpf/blocked_ips
+			[{
+		        "key": 1929423040,
+		        "value": 1
+			    }
+			]
+			```
+		     1.  E para quando for preciso. Esse é o comando para remover a entrada que criamos
+			 ```bash
+			 sudo bpftool map delete pinned '/sys/fs/bpf/blocked_ips' key hex c0 a8 00 73
+			 ```
+
+5. **Evidências**
+
+<style>
+  .video-container {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+
+<video class="video-container" controls>
+  <source src="/img/XDPeBPFDoS/evidencia-1.mp4" type="video/mp4">
+  Seu navegador não suporta o elemento de vídeo.
+</video>
+
+
+### 2.2. Configuração do nftables e Logs
+1. **Diretório de teste**
+	1. Acesse ou crie o diretório...
+
+```bash
+$ mkdir /tmp/src && cd /tmp/src
+```
+
+2. **Regras nftables**
+	1. Crie o arquivos `dos.nft`
+	```nft
+	cat <<Uai> /tmp/src/dos.nft
+	table inet dos_filter {
+		chain input {
+			type filter hook input priority 0; policy accept;
+			
+			ip protocol tcp ct state new limit rate 10/second burst 20 packets \
+				log prefix "DDoS_ALERT: SRC=" flags all
+			   
+			ip protocol udp ct state new limit rate 10/second burst 20 packets \
+				log prefix "DDoS_ALERT: SRC=" flags all
+		}
+	}
+	Uai
+	```
+
+	2. Carregue as regras
+	
+	```bash
+	sudo nft -f ddos.nft
+	```
+	
+	3. Verifique as regras da table criada
+
+	```bash
+	$ sudo nft list table inet dos_filter
+	
+	table inet dos_filter {
+		chain input {
+			type filter hook input priority filter; policy accept;
+			ip protocol tcp ct state new limit rate 10/second burst 20 packets log prefix "DDoS_ALERT: SRC=" flags all
+			ip protocol udp ct state new limit rate 10/second burst 20 packets log prefix "DDoS_ALERT: SRC=" flags all
+		}
+	}
+	```
+
+
+3. **Rsyslog:**
+
+	1. Crie o arquivo de configuração em `/etc/rsyslog.d/nftables.conf` 
+	
+	```text
+	sudo su -c 'cat <<Uai> /etc/rsyslog.d/dos_nftables.conf
+	# Filtra mensagens que contenham "DDoS_ALERT:" e as grava em /var/log/dos_nftables.log
+	:msg, contains, "DDoS_ALERT:" -/var/log/dos_nftables.log
+	& stop
+	Uai'
+	```
+	2. Recarregue as confs para o systemd
+	
+	```bash
+	sudo systemctl daemon-reload
+	```
+	1. Reinicie o rsyslog:
+	
+	```bash
+	sudo systemctl restart rsyslog
+    ```
+    1. Visualize os logs para confirmar que as entradas com prefixo "DDoS_ALERT: SRC=" estão sendo gravadas em `/var/log/dos_nftables.log`:
+    
+    ```bash
+    sudo tail -f /var/log/dos_nftables.log
+    ```
+        
+2. **Geração de Logs:**
+    - Para testar, você pode simular novos fluxos TCP, UDP com`hping3`.
+
+	1. Para ver o comportamento para protocolo UDP
+		1. na VM 1: crie um servidor UDP
+		```
+		cat <<Uai> /tmp/src/srv-udp.py
+		import socket
+		
+		UDP_IP = "0.0.0.0"
+		UDP_PORT = 9999
+		
+		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		sock.bind((UDP_IP, UDP_PORT))
+		print("Servidor UDP escutando na porta", UDP_PORT)
+		
+		while True:
+		    data, addr = sock.recvfrom(1024)  # Buffer de 1024 bytes
+		    print("Recebido:", data.decode(), "de", addr)
+		Uai
+		```
+
+		 2. e execute o server
+		```bash
+		sudo python3 srv-udp.py
+		```
+		 
+		 1. Na VM2, dispare contra a porta 9999 UDP
+		```bash
+		sudo hping3 -2 -p 9999 -i u10000 192.168.0.114
+		```
+
+		 1. Na VM1, observe os logs em
+			 1. nf_conntrack
+			 
+			```bash
+			sudo watch -n1 tail -f /proc/net/nf_conntrack
+			```
+			 1. dos_nftables.log
+		    ```bash
+		    sudo tail -f /var/log/dos_nftables.log
+		    ```
+
+
 
