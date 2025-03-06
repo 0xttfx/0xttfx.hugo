@@ -1,28 +1,34 @@
----
 title: "{{ replace .Name "-" " " | title }}"
 date: {{ .Date }}
-# weight: 1
-# aliases: ["/first"]
-layout: "simple"
-tags: ["?"]
 author: "Faioli a.k.a 0xttfx"
-# author: ["Me", "You"] # multiple authors
-showToc: true
-TocOpen: false
-draft: false
-hidemeta: false
-comments: false
-description: "Desc Text."
-canonicalURL: "https://canonical.url/to/page"
-disableHLJS: true # to disable highlightjs
-disableShare: false
-disableHLJS: false
-hideSummary: false
-searchHidden: true
-ShowReadingTime: true
-ShowBreadCrumbs: true
-ShowPostNavLinks: true
-ShowWordCount: true
-ShowRssButtonInSectionTermList: true
+tags:
+  - Linux
+categories:
+  - Linux
+collections:
+  - Getting Started
 UseHugoToc: true
+draft: false
 ---
+
+
+
+
+---
+<script src="https://giscus.app/client.js"
+        data-repo="0xttfx/0xttfx.github.io"
+        data-repo-id="R_kgDOK3wAHw"
+        data-category="BlogPostComments"
+        data-category-id="DIC_kwDOK3wAH84Cnmtb"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+

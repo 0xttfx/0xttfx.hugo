@@ -371,7 +371,8 @@ enableEmoji = true
     name = "Faioli a.k.a 0xttfx"
     email = "thiago.faioli@gmail.com"
     link = "https://github.com/0xttfx"
-    avatar = ""
+    avatar = "/images/thiago_11.png"
+    authorAvatar = "/images/thiago_11.png"
 
   # FixIt 0.3.0 | NEW public Git repository information only then enableGitInfo is true
   [params.gitInfo]
@@ -391,7 +392,7 @@ enableEmoji = true
     # whether to omit favicon resource links
     noFavicon = false
     # modern SVG favicon to use in place of older style .png and .ico files
-    svgFavicon = ""
+    svgFavicon = "/static/favicon.ico"
     # Safari mask icon color
     iconColor = "#5bbad5"
     # Windows v8-10 tile color
@@ -468,9 +469,9 @@ enableEmoji = true
     # FixIt 0.2.12 | NEW Header subtitle config
     [params.header.subtitle]
       # subtitle name
-      name = ""
+      name = "----- -..- - - ..-. -..-"
       # whether to use typeit animation for subtitle name
-      typeit = false
+      typeit = true
 
   # FixIt 0.2.18 | NEW Breadcrumb config
   [params.breadcrumb]
@@ -597,7 +598,7 @@ enableEmoji = true
     [params.home.posts]
       enable = false
       # special amount of posts in each home posts page
-      paginate = 6
+      paginate = 10
 
   # FixIt 0.2.16 | CHANGED Social config about the author
   [params.social]
@@ -710,7 +711,7 @@ enableEmoji = true
     # cursor duration after typing finishing (measured in milliseconds, "-1" means unlimited)
     duration = -1
     # FixIt 0.2.18 | NEW whether your strings will continuously loop after completing
-    loop = false
+    loop = true
 
   # FixIt 0.2.15 | NEW Mermaid config
   [params.mermaid]
@@ -892,10 +893,10 @@ enableEmoji = true
   # FixIt 0.2.17 | NEW Progress bar in the top during page loading.
   # For more information: https://github.com/CodeByZach/pace
   [params.pace]
-    enable = false
+    enable = true
     # All available colors:
     # ["black", "blue", "green", "orange", "pink", "purple", "red", "silver", "white", "yellow"]
-    color = "blue"
+    color = "pink"
     # All available themes:
     # ["barber-shop", "big-counter", "bounce", "center-atom", "center-circle", "center-radar", "center-simple",
     # "corner-indicator", "fill-left", "flash", "flat-top", "loading-bar", "mac-osx", "material", "minimal"]
@@ -1000,11 +1001,11 @@ enableEmoji = true
     # FixIt 0.3.10 | NEW whether to hide a page from RSS, Atom and JSON feed
     hiddenFromFeed = false
     # whether to enable twemoji
-    twemoji = false
+    twemoji = true
     # FixIt 0.2.18 | CHANGED whether to enable lightgallery
     # set to true, images in the content will be shown as the gallery if the image has a title, e.g. ![alt](src "title")
     # set to "force", images in the content will be forced to shown as the gallery regardless of the image has a title or not, e.g. ![alt](src)
-    lightgallery = false
+    lightgallery = true
     # whether to enable the ruby extended syntax
     ruby = true
     # whether to enable the fraction extended syntax
@@ -1037,7 +1038,7 @@ enableEmoji = true
     # FixIt 0.3.0 | NEW whether to enable collection list at the sidebar
     collectionList = false
     # FixIt 0.3.0 | NEW whether to enable collection navigation at the end of the post
-    collectionNavigation = false
+    collectionNavigation = true
 
     # FixIt 0.2.15 | NEW Repost config
     [params.page.repost]
@@ -1073,7 +1074,7 @@ enableEmoji = true
       # FixIt 0.3.12 | CHANGED must set `params.page.toc.ordered` to true
       [params.page.heading.number]
         # whether to enable auto heading numbering
-        enable = false
+        enable = true
         # FixIt 0.3.3 | NEW only enable in main section pages (default is posts)
         onlyMainSection = true
         [params.page.heading.number.format]

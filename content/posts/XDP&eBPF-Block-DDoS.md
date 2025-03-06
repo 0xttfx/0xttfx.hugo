@@ -1,7 +1,7 @@
 ---
 title: "XDP & eBPF Block DoS"
 date: 2025-01-22T17:13:52-03:00
-author: "Faioli a.k.a 0xttfx"
+author: "Faioli a.k.a 0xttfx" 
 tags:
   - XDP
   - eBPF
@@ -12,13 +12,12 @@ categories:
   - Networking
 collections:
   - Getting Started
+featuredImage: /img/XDPeBPFDoS/eBPF.png # imagem principal do post
+featuredImagePreview: /img/XDPeBPFDoS/eBPF.png # imagem lista do post na hone
+summary: # resumo na página home
 draft: false
 ---
 
-
-![Netfilter-packet-flow](/img/XDPeBPFDoS/eBPF.png)
-
----
 
 Segue um teste para aplicar os conceitos de eBPF! É um esboço de uma solução que espera ser funcional e que combina um programa [XDP](https://prototype-kernel.readthedocs.io/en/latest/networking/XDP/introduction.html#what-is-xdp)/[eBPF](https://ebpf.io/) em C com um script em Bash(antes de usar Go) para monitorar o tráfego e atualizar dinamicamente um [map](https://docs.cilium.io/en/latest/reference-guides/bpf/architecture/#maps) [eBPF](https://ebpf.io/) com sources IPs que devem ser bloqueados quando idenficado um possível ataque [DoS](https://attack.mitre.org/techniques/T0814/). 
 
