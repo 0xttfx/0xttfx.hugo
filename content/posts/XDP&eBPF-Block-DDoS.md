@@ -801,7 +801,7 @@ $ mkdir /tmp/src && cd /tmp/src
 
 	1. Crie o arquivo de configuração em `/etc/rsyslog.d/nftables.conf` 
 	
-	```text
+	```bash
 	sudo su -c 'cat <<Uai> /etc/rsyslog.d/dos_nftables.conf
 	# Filtra mensagens que contenham "DDoS_ALERT:" e as grava em /var/log/dos_nftables.log
 	:msg, contains, "DDoS_ALERT:" -/var/log/dos_nftables.log
@@ -829,7 +829,7 @@ $ mkdir /tmp/src && cd /tmp/src
 
 	1. Para ver o comportamento para protocolo UDP
 		1. na VM 1: crie um servidor UDP
-		```
+		```bash
 		cat <<Uai> /tmp/src/srv-udp.py
 		import socket
 		
