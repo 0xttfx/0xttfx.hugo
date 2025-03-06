@@ -210,3 +210,22 @@ Quando ativado a  verificação de URL e AIA, o URL responder é consultado prim
 As sessões cliente com processamento de OCSP habilitado podem solicitar a sessão do servidor para enviar uma resposta do OCSP como parte da negociação de sessão para protocolos TLS TLSv1.3 e TLSv1.2. 
 - A sessão cliente processa a resposta do OCSP stapling no servidor, eliminando a necessidade do cliente consultar um do *OCSP responder* para o status de revogação de certificado. 
 - Uma sessão do servidor também deve ativar o processamento de solicitação de status do certificado, para suportar o stapling do OCSP quando solicitado por um software cliente.
+
+---
+<script src="https://giscus.app/client.js"
+        data-repo="0xttfx/0xttfx.github.io"
+        data-repo-id="R_kgDOK3wAHw"
+        data-category="BlogPostComments"
+        data-category-id="DIC_kwDOK3wAH84Cnmtb"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+

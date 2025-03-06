@@ -116,3 +116,22 @@ Existem diversas formas de desenvolver o letramento/alfabetização em IA, tais 
 - [O que é alfabetização em IA? Um guia abrangente para iniciantes - DataCamp](https://www.datacamp.com/pt/blog/what-is-ai-literacy-a-comprehensive-guide-for-beginners)
 - [Um referencial para a literacia em IA - Blogue RBE](https://blogue.rbe.mec.pt/um-referencial-para-a-literacia-em-ia-2852029)
 
+
+---
+<script src="https://giscus.app/client.js"
+        data-repo="0xttfx/0xttfx.github.io"
+        data-repo-id="R_kgDOK3wAHw"
+        data-category="BlogPostComments"
+        data-category-id="DIC_kwDOK3wAH84Cnmtb"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+

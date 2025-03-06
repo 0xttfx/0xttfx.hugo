@@ -309,3 +309,21 @@ iptables -A INPUT -s 0.0.0.0/0 -j DROP
 - Monitore seu sistema após aplicar novas regras para detectar comportamentos inesperados ou interrupções.
 - A combinação dessas técnicas ajuda a criar uma defesa robusta contra ataques DDoS UDP flood e manter a disponibilidade do serviço mesmo diante de tráfego malicioso
 
+---
+<script src="https://giscus.app/client.js"
+        data-repo="0xttfx/0xttfx.github.io"
+        data-repo-id="R_kgDOK3wAHw"
+        data-category="BlogPostComments"
+        data-category-id="DIC_kwDOK3wAH84Cnmtb"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
